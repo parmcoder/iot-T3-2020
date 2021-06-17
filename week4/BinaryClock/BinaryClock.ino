@@ -1,0 +1,1 @@
+#include "HC595.h"HC595 shreg(2,3,4,5);unsigned int i = 0;//this means//2 -> ser//3 -> srClk//4 -> rClk//5 -> clearvoid setup() {}void loop() {  i++;  shreg.pushn(i, 8);  shreg.latch();  delay(100);}

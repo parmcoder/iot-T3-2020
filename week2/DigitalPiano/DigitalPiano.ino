@@ -1,15 +1,7 @@
-//#include "pitches.h"
-//
+
 const int INPUT_PINS[4] = {2, 3, 4, 5};
 const int nPins = 4;
 int duration = 500;
-//
-
-//
-//void button_pressed(){
-//
-//}
-//
 
 #include <Arduino.h>
 
@@ -43,6 +35,10 @@ int melody[] = {
   NOTE_F6, 4, NOTE_DS6, 8, NOTE_CS6, 4, NOTE_C6, 8, NOTE_AS5, 4, NOTE_GS5, 8, NOTE_G5, 4, NOTE_F5, 8,
   NOTE_C6, 1
 
+};
+
+int melody_keyboard[] = {
+  NOTE_C7, NOTE_D7, NOTE_E7, NOTE_G7,
 };
 
 void setup() {
@@ -96,18 +92,12 @@ void playSong2() {
 }
 
 void loop() {
-  //read the pushbutton value into a variable
   for ( int i = 0; i < nPins; i++) {
-    int sensorVal = digitalRead(INPUT_PINS[i]);
-    //print out the value of the pushbutton
-    //  Serial.println(sensorVal);
-
-    // Keep in mind the pull-up means the pushbutton's logic is inverted. It goes
-    // HIGH when it's open, and LOW when it's pressed. Turn on pin 13 when the
-    // button's pressed, and off when it's not:
-    if (sensorVal == LOW) {
-      playSong2();
+    while (digitalRead(INPUT_PINS[i]) == LOW)
+    {
+      tone(buzzer, melody_keyboard[i]);
     }
   }
+  noTone(buzzer);
 
 }
