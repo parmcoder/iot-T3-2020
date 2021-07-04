@@ -16,7 +16,7 @@ MFRC522::MIFARE_Key key;
 void setup() {
   myservo.attach(2);  // attaches the servo on pin 9 to the servo object
   myservo.write(0);              // tell servo to go to position in variable 'pos'
-  Serial.begin(9600);
+  Serial.begin(115200);
   SPI.begin();
   rfid.PCD_Init();
 }
@@ -24,10 +24,15 @@ void setup() {
 int isOpen = false;
 unsigned long currentTime;
 unsigned long lastTime;
+unsigned long resetTime;
 
 void loop() {
-  isOpen = false;
   currentTime = millis();
+  if (currentTime > resetTime) {
+    myservo.write(1);
+    isOpen = false;
+
+  }
   if (!rfid.PICC_IsNewCardPresent() || !rfid.PICC_ReadCardSerial())
     return;
 
@@ -51,18 +56,18 @@ void loop() {
       (i != 3 ? ":" : "");
   }
   strID.toUpperCase();
+  Serial.print("Tap card key: ");
+  Serial.println(strID);
 
-  if (strID.length() > 0 && !isOpen && (currentTime > lastTime)) {                         // waits for the servo to get there
-    Serial.print("Tap card key: ");
+  if (strID == "50:AE:73:30" && !isOpen) {                         // waits for the servo to get there
+    Serial.print("Correct, get your gift! Owner of ");
     Serial.println(strID);
 
     myservo.write(30);              // tell servo to go to position in variable 'pos'
     isOpen = true;
-    delay(90);                           // waits for the servo to get there
-    myservo.write(0);
-    lastTime = millis() + 2000;
+    //    delay(80);                           // waits for the servo to get there
+    resetTime = millis() + 75;
   }
-
 
   rfid.PICC_HaltA();
   rfid.PCD_StopCrypto1();
